@@ -17,6 +17,8 @@ small = 3.5 * 2.5
 #Break out data into amplitude, maximum, height (peak to peak), and minimum dataframes
 
 amp = df.iloc[:,::4]
+amp_time = df.iloc[:,0:2]
+amp_time.columns = ['time', 'voltage']
 amp_avg = pd.DataFrame(amp.mean())
 amp_avg = amp_avg.melt()
 amp_avg.columns = ['electrode','voltage']
@@ -34,6 +36,7 @@ height_avg = pd.DataFrame(height.mean())
 height_avg = height_avg.melt()
 height_avg.columns = ['electrode','voltage']
 height_avg['electrode'] = np.arange(1,61)
+# Electrodes are numbered in visual reading order of MC_Rack layout top left to bottom right
 height_avg['size'] = [ref,ref,ref,med,med,med,med,ref,ref,med,med,med,med,ref,large,large,large,large,large,large,large,large,large,large,large,large,large,large,large,large,ref,ref,ref,small,small,small,small,ref,ref,small,small,small,small,ref,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small,small]
 # df.insert(1,"temp",blank,True)
 min = df.iloc[:,3::4]
@@ -92,7 +95,12 @@ def label_point(x, y, val, ax):
             xplot = 3
         if y[i] > threshold:
             k.text(xplot, point['y'], int(point['val']))
+            print("Electrode number", int(point['val']), "exceeds ", threshold, "uV threshold")
+
 label_point(height_avg['size'], height_avg['voltage'],height_avg['electrode'], plt.gca())
-
-
 plt.show()
+
+#Plot looking at time stabilisation
+print(amp_time)
+l = sns.scatterplot(x = amp_time["time"], y= amp_time["voltage"])
+plt.show(l)
