@@ -5,7 +5,7 @@ import pandas as pd
 
 # Read data from file 'filename.csv'
 # (in the same directory that your python process is based)
-data = pd.read_csv("E5_Analysis.csv")
+data = pd.read_csv("N4_Analysis.csv")
 df = pd.DataFrame(data)
 
 #define electrode sizes (are in square um), need to confirm reference sizes
