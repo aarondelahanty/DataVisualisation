@@ -5,7 +5,7 @@ import pandas as pd
 
 # Read data from file 'filename.csv'
 # (in the same directory that your python process is based)
-data = pd.read_csv("N4_Analysis.csv")
+data = pd.read_csv("k4_Analysis.csv")
 df = pd.DataFrame(data)
 
 #define electrode sizes (are in square um), need to confirm reference sizes
@@ -73,34 +73,39 @@ min_avg['electrode'] = np.arange(1,61)
 threshold = 100
 
 k=sns.swarmplot(x=height_avg['size'], y=height_avg['voltage'], palette='pastel', hue = height_avg['size'])
-k.set(xticks = [], title = 'Time Averaged Peak to Peak Amplitude',xlabel = "Electrode Area", ylabel = "Recorded Voltage [uV]")
-# k.legend_.remove()
-#k.axhline(threshold)
-k.legend_.set_title('Electrode Area [um$^2$]')
+k.set( title = 'Time Averaged Peak to Peak Amplitude',xlabel = "Electrode Area [\u03BCm\u00b2]", ylabel = "Recorded Voltage [uV]")
+k.legend_.remove()
+k.axhline(threshold, color = 'k', linestyle = '--')
+k.text(-.45, threshold + threshold * .12,'Electrode Number(s): ')
+k.text(-.45, threshold - threshold * .1,'Exceed Allowable Threshold')
+# k.legend_.set_title('Electrode Area [um$^2$]')
 
 # Add data labels (for readabiltiy only add electode ID if above voltage threshold)
-
 def label_point(x, y, val, ax):
     xplot = 0
+    labels = 0
     a = pd.concat({'x': x, 'y': y, 'val': val}, axis=1)
     for i, point in a.iterrows():
-        #need to convert x-position to swarm bin for plotting
-        if x[i] <= small:
-            xplot = 0
-        elif x[i] <= med:
-            xplot = 1
-        elif x[i] <= large:
-            xplot = 2
-        else:
-            xplot = 3
+        #need to convert x-position (electrode area) to swarm bin for plotting
+        # if x[i] <= small:
+        #     xplot = 0
+        # elif x[i] <= med:
+        #     xplot = 1
+        # elif x[i] <= large:
+        #     xplot = 2
+        # else:
+        #     xplot = 3
         if y[i] > threshold:
-            k.text(xplot, point['y'], int(point['val']))
-            print("Electrode number", int(point['val']), "exceeds ", threshold, "uV threshold")
+                labels = labels + 1
+                flag1 = 0
+                k.text(-.5+.2*labels,threshold + threshold * .02, int(point['val']))
+                print("Electrode number", int(point['val']), "exceeds ", threshold, "uV threshold")
 
 label_point(height_avg['size'], height_avg['voltage'],height_avg['electrode'], plt.gca())
+
 plt.show()
 
-#Plot looking at time stabilisation
-print(amp_time)
-l = sns.scatterplot(x = amp_time["time"], y= amp_time["voltage"])
-plt.show(l)
+# #Plot looking at time stabilisation
+# print(amp_time)
+# l = sns.scatterplot(x = amp_time["time"], y= amp_time["voltage"])
+# plt.show(l)
