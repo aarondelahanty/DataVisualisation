@@ -5,7 +5,8 @@ import pandas as pd
 
 # Read data from file 'filename.csv'
 # (in the same directory that your python process is based)
-data = pd.read_csv("k4_Analysis.csv")
+filename = "k4_Analysis.csv"
+data = pd.read_csv(filename)
 df = pd.DataFrame(data)
 
 #define electrode sizes (are in square um), need to confirm reference sizes
@@ -73,7 +74,7 @@ min_avg['electrode'] = np.arange(1,61)
 threshold = 100
 
 k=sns.swarmplot(x=height_avg['size'], y=height_avg['voltage'], palette='pastel', hue = height_avg['size'])
-k.set( title = 'Time Averaged Peak to Peak Amplitude',xlabel = "Electrode Area [\u03BCm\u00b2]", ylabel = "Recorded Voltage [uV]")
+k.set( title = '{} - Time Averaged Peak to Peak Amplitude'.format(filename),xlabel = "Electrode Area [\u03BCm\u00b2]", ylabel = "Recorded Voltage [uV]")
 k.legend_.remove()
 k.axhline(threshold, color = 'k', linestyle = '--')
 k.text(-.45, threshold + threshold * .12,'Electrode Number(s): ')
@@ -98,7 +99,8 @@ def label_point(x, y, val, ax):
         if y[i] > threshold:
                 labels = labels + 1
                 flag1 = 0
-                k.text(-.5+.2*labels,threshold + threshold * .02, int(point['val']))
+                bad_electrode = int(point['val'])
+                k.text(-.5+.2*labels,threshold + threshold * .02, "{},".format(bad_electrode))
                 print("Electrode number", int(point['val']), "exceeds ", threshold, "uV threshold")
 
 label_point(height_avg['size'], height_avg['voltage'],height_avg['electrode'], plt.gca())
